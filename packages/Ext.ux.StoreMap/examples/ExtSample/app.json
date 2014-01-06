@@ -1,0 +1,9 @@
+{
+    "name": "ExtSample",
+
+    "requires": [
+	    "Ext.ux.StoreMap"
+    ],
+
+    "id": "15507b66-c602-40b8-8afc-5a5ecb1374cb"
+}
