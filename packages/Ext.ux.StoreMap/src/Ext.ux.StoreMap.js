@@ -5,6 +5,10 @@ Ext.define('Ext.ux.StoreMap', {
 
     extend: 'Ext.ux.GMapPanel',
 
+	requires: [
+		'Ext.ux.GMapPanel'
+	],
+
     alias: 'widget.storemap',
 
     config: {
@@ -76,8 +80,25 @@ Ext.define('Ext.ux.StoreMap', {
 	     */
 	    groupMarkers                : true,
 
+	    /**
+	     * @cfg {Boolean} linkMarkers Use a Polyline to link the shown markers in the order that they are found in the store.
+	     */
+	    linkMarkers                 : false,
+
+	    /**
+	     * @cfg {Object} linkConfig A configuration object to be passed to the linking Google Maps Polyline (see docs: https://developers.google.com/maps/documentation/javascript/reference#PolylineOptions)
+	     */
+	    linkConfig                  : {
+		    strokeColor: 'red',
+		    strokeOpacity: 1.0,
+		    strokeWeight: 2
+	    },
+
 	    // private
 	    markers                     : null,
+
+	    // private
+	    polyline                    : null,
 
 	    // private
 	    currentLocationMarker       : null,
@@ -139,6 +160,10 @@ Ext.define('Ext.ux.StoreMap', {
 		overlay.setMap(map.getMap());
 
 		this.setOverlayView(overlay);
+
+		if(this.getLinkMarkers()){
+			this.createPolyline();
+		}
 
 		google.maps.event.addListener(this.getMap(), 'dragstart', Ext.bind(this.onMapClick, this));
 		google.maps.event.addListener(this.getMap(), 'click', Ext.bind(this.onMapClick, this));
@@ -324,13 +349,14 @@ Ext.define('Ext.ux.StoreMap', {
 	 * @param {Object} location
 	 */
 	doUpdateCurrentLocation: function(location){
-var hasLoc = location && location.lat && location.lng;
-		if(hasLoc && this.getShowCurrentLocationMarker()){
+		var hasLocation = location && location.lat && location.lng;
+
+		if(hasLocation && this.getShowCurrentLocationMarker()){
 			var val = this.createCurrentLocationMarker(location.lat, location.lng);
 			this.setCurrentLocationMarker(val);
 		}
 
-		if(hasLoc && this.getCentreOnCurrentLocation()){
+		if(hasLocation && this.getCentreOnCurrentLocation()){
 			this.panToCurrentLocation();
 		}
 	},
@@ -495,12 +521,8 @@ var hasLoc = location && location.lat && location.lng;
 	 * @param records
 	 * @param indices
 	 */
-	onStoreRemove: function(store, records, indices) {
-		var ln = records.length,
-			i;
-		for (i = 0; i < ln; i++) {
-			this.removeMarkerByRecord(records[i]);
-		}
+	onStoreRemove: function(store, record, indices) {
+		this.removeMarkerByRecord(record);
 	},
 
 	/**
@@ -561,6 +583,11 @@ var hasLoc = location && location.lat && location.lng;
 			icon        : icon
 		});
 
+		if(this.getLinkMarkers() && this.getPolyline()){
+			var path = this.getPolyline().getPath();
+			path.push(latLngLocation);
+		}
+
 		google.maps.event.addListener(marker, 'click', Ext.bind(this.onMarkerTap, this, [record, marker], true));
 
 		return marker;
@@ -579,6 +606,11 @@ var hasLoc = location && location.lat && location.lng;
 
 		if(marker){
 			var latLng = this.getGMLocation(lat, lng);
+
+			// update the polyline joining the marker if that option is enabled
+			if(this.getLinkMarkers() && this.getPolyline()){
+				this.getPolyline().getPath().setAt(this.findMarkerPathIndex(marker), latLng);
+			}
 
 			marker.setPosition(latLng);
 
@@ -627,6 +659,11 @@ var hasLoc = location && location.lat && location.lng;
 
 		// remove from the Markers collection
 		this.getMarkers().remove(marker);
+
+		if(this.getLinkMarkers() && this.getPolyline()){
+			var path = this.getPolyline().getPath();
+			path.removeAt(this.findMarkerPathIndex(marker));
+		}
 	},
 
 	/**
@@ -664,5 +701,49 @@ var hasLoc = location && location.lat && location.lng;
 
 	getMap: function(){
 		return this.gmap;
+	},
+
+	/**
+	 * Creates a Google Map's Polyline to join the markers
+	 * @method
+	 * @private
+	 */
+	createPolyline: function(){
+		if(!this.getPolyline()){
+			this.setPolyline(new google.maps.Polyline(Ext.applyIf(this.getLinkConfig(), {
+				path: [],
+				geodesic: true
+			})));
+
+			this.getPolyline().setMap(this.getMap());
+		}
+	},
+
+	/**
+	 * Returns the index of the Polyline item that relates to the marker passed in.
+	 * @method
+	 * @private
+	 * @param {google.maps.Marker} marker A google.maps.Marker instance
+	 * @returns {Number} The index or undefined if not found
+	 */
+	findMarkerPathIndex: function(marker){
+		var foundIndex;
+
+		if(this.getLinkMarkers() && this.getPolyline()){
+			var polyline = this.getPolyline();
+
+			polyline.getPath().forEach(function(item, index){
+				// we compare the marker and the current item's lat and lng. We only go in here if we DON'T have a 'foundIndex' (once found we should really break out the loop)
+				if(marker.position.lat() === item.lat() && marker.position.lng() === item.lng() && !foundIndex){
+					foundIndex = index;
+					return false;
+				}
+
+
+			});
+		}
+
+		return foundIndex;
 	}
+
 });

@@ -16,7 +16,8 @@ Ext.define('ExtSample.view.Map', {
 		  zoom: 13
 	    },
 	    store: 'Markers',
-	    groupMarkers: false
+	    groupMarkers: false,
+	    linkMarkers: true
     },
 
     initialize: function(){
