@@ -130,7 +130,7 @@ Ext.define('Ext.ux.StoreMap', {
 		    scope: this
 	    });
 
-        this.callParent(arguments);
+	    this.callParent(arguments);
 
 	    if (me.getStore()) {
 		    if (me.getMap()) {
@@ -330,14 +330,12 @@ Ext.define('Ext.ux.StoreMap', {
 	 * @param {Object} oldLocation
 	 */
 	updateCurrentLocation: function(location, oldLocation){
-
 		if (!this.getMap()) {
 			//this.un('mapready', 'doUpdateCurrentLocation', this);
 			this.on('mapready', 'doUpdateCurrentLocation', this, { delay: 150, single: true, args: [location] });
 		} else {
 			this.doUpdateCurrentLocation(location);
 		}
-
 	},
 
 	/**

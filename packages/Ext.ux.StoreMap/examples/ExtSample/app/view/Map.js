@@ -18,11 +18,6 @@ Ext.define('ExtSample.view.Map', {
 	    store: 'Markers',
 	    groupMarkers: false,
 	    linkMarkers: true
-    },
-
-    initialize: function(){
-        this.callParent(arguments);
-
     }
 
 });

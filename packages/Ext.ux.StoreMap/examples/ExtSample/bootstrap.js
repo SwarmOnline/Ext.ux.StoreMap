@@ -8,8 +8,10 @@ Ext.Loader.addClassPathMappings({
   "Ext": "../../../../ext/src",
   "Ext.Msg": "../../../../ext/src/window/MessageBox.js",
   "Ext.rtl.EventObjectImpl": "../../../../ext/src/rtl/EventObject.js",
+  "Ext.ux.ExtStoreMap": "../../src/Ext.ux.ExtStoreMap.js",
   "Ext.ux.GMapPanel": "../../src/Ext.ux.GMapPanel.js",
   "Ext.ux.StoreMap": "../../src/Ext.ux.StoreMap.js",
+  "Ext.ux.StoreMapBase": "../../src/Ext.ux.StoreMapBase.js",
   "ExtSample": "app"
 });
 Ext.ClassManager.addNameAlternateMappings({
@@ -757,6 +759,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.ux.DataView.DragSelector": [],
   "Ext.ux.DataView.Draggable": [],
   "Ext.ux.DataView.LabelEditor": [],
+  "Ext.ux.ExtStoreMap": [],
   "Ext.ux.FieldReplicator": [],
   "Ext.ux.GMapPanel": [],
   "Ext.ux.GroupTabPanel": [],
@@ -769,6 +772,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.ux.SlidingPager": [],
   "Ext.ux.Spotlight": [],
   "Ext.ux.StoreMap": [],
+  "Ext.ux.StoreMapBase": [],
   "Ext.ux.TabCloseMenu": [],
   "Ext.ux.TabReorderer": [],
   "Ext.ux.TabScrollerMenu": [],
@@ -832,7 +836,10 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "ExtSample.Application": [],
   "ExtSample.controller.Main": [],
+  "ExtSample.model.Marker": [],
+  "ExtSample.store.Markers": [],
   "ExtSample.view.Main": [],
+  "ExtSample.view.Map": [],
   "ExtSample.view.Viewport": []
 });
 Ext.ClassManager.addNameAliasMappings({
@@ -1698,6 +1705,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.ux.DataView.DragSelector": [],
   "Ext.ux.DataView.Draggable": [],
   "Ext.ux.DataView.LabelEditor": [],
+  "Ext.ux.ExtStoreMap": [
+    "widget.ExtMap"
+  ],
   "Ext.ux.FieldReplicator": [],
   "Ext.ux.GMapPanel": [
     "widget.gmappanel"
@@ -1721,6 +1731,9 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.ux.Spotlight": [],
   "Ext.ux.StoreMap": [
     "widget.storemap"
+  ],
+  "Ext.ux.StoreMapBase": [
+    "widget.StoreMapBase"
   ],
   "Ext.ux.TabCloseMenu": [
     "plugin.tabclosemenu"
@@ -1825,8 +1838,13 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "ExtSample.Application": [],
   "ExtSample.controller.Main": [],
+  "ExtSample.model.Marker": [],
+  "ExtSample.store.Markers": [],
   "ExtSample.view.Main": [
     "widget.app-main"
+  ],
+  "ExtSample.view.Map": [
+    "widget.Map"
   ],
   "ExtSample.view.Viewport": []
 });
